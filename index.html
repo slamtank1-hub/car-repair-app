@@ -24,6 +24,9 @@
     .steps{list-style:none;padding:0;margin:10px 0 0;counter-reset:step}.steps li{counter-increment:step;margin:8px 0;padding:11px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;line-height:1.45;display:flex;gap:10px;align-items:flex-start}.steps li::before{content:counter(step);min-width:22px;height:22px;border-radius:50%;background:var(--primary);color:white;font-weight:900;font-size:.78rem;display:flex;align-items:center;justify-content:center}.steps input{width:24px;height:24px;flex:0 0 auto}.steps label{flex:1}.steps input:checked+label{text-decoration:line-through;color:var(--muted)}
     .answer-box{background:var(--answer-bg);border:1px solid #bae6fd;border-radius:14px;padding:14px;margin-top:10px;line-height:1.55;font-weight:800;color:#075985}.answer-box.hidden{filter:blur(5px);user-select:none}.media-img{width:100%;border-radius:14px;border:1px solid var(--line);margin-top:10px;display:block;background:white}.media-title{font-weight:850;margin:10px 0 6px}.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.quick-table{width:100%;border-collapse:separate;border-spacing:0 8px}.quick-table th{text-align:left;font-size:.78rem;color:var(--muted);padding:4px}.quick-table td{background:white;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 8px;font-size:.88rem}.quick-table td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px;font-weight:900;color:var(--primary-dark)}.quick-table td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}.flash-hint{font-size:.82rem;color:var(--muted);margin-top:7px}
     .source-switch{position:absolute;right:18px;top:14px;display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.14);padding:5px;border-radius:999px}.source-switch button{border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:white;border-radius:999px;padding:7px 9px;font-size:.72rem;font-weight:900;cursor:pointer}.source-switch button.active{background:white;color:var(--primary-dark);border-color:white}.source-status{font-size:.72rem;opacity:.92;margin-top:4px}.source-status b{color:white}.reload-mini{font-size:.72rem;text-decoration:underline;cursor:pointer;color:white;opacity:.95}@media (max-width:560px){.source-switch{position:static;margin-top:10px;justify-content:flex-end}.app-title{padding-right:0}}
+
+    .debug-panel{background:#020617;color:#e2e8f0;border-radius:16px;padding:14px;margin:12px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.78rem;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+    .debug-panel b{color:#93c5fd}.debug-ok{color:#86efac}.debug-warn{color:#fde68a}.debug-error{color:#fca5a5}.debug-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.debug-actions button{border:1px solid #475569;background:#1e293b;color:#e2e8f0;border-radius:10px;padding:8px 10px;font-weight:800;cursor:pointer}
     .footer-notice{max-width:760px;margin:24px auto 0;padding:16px 18px;color:#64748b;font-size:.78rem;line-height:1.55;border-top:1px solid #e2e8f0}.footer-notice p{margin:6px 0}
     .load-box{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:10px;box-shadow:var(--shadow)}.file-grid{display:grid;gap:10px;margin-top:12px}.file-grid label{font-weight:800;font-size:.88rem;color:var(--secondary)}.file-grid input{width:100%;padding:10px;background:#f8fafc;border:1px solid var(--line);border-radius:10px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f1f5f9;padding:2px 6px;border-radius:6px}
     @media (min-width:680px){.exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.exam-grid .card{margin-bottom:0}}
@@ -43,9 +46,9 @@ const DATA_SOURCES={
   local:{label:'로컬 CSV',exams:'exams.csv',tasks:'tasks.csv',media:'media.csv'},
   drive:{
     label:'Google Drive',
-      exams:'https://docs.google.com/spreadsheets/d/140_X1ujw3BEG9Lc_jE3QtPTPq0RyJTKWWjvhf2Oi_BE/export?format=csv&gid=0',
-      tasks:'https://docs.google.com/spreadsheets/d/140_X1ujw3BEG9Lc_jE3QtPTPq0RyJTKWWjvhf2Oi_BE/export?format=csv&gid=0',
-      media:'https://docs.google.com/spreadsheets/d/1f0pWJ1ngln5-TzVe_b1p2jsy4Gq5UE4RVXTK3cMVWGs/export?format=csv&gid=0'
+      exams:'https://docs.google.com/spreadsheets/d/140_X1ujw3BEG9Lc_jE3QtPTPq0RyJTKWWjvhf2Oi_BE/export?format=csv&gid=1144832408',
+      tasks  :'https://docs.google.com/spreadsheets/d/1D3ryzzxTbbzdgpMnaHt2qU35NFh1YOPv75Pzkkr7PR8/export?format=csv&gid=1073896362',
+      media:'https://docs.google.com/spreadsheets/d/1f0pWJ1ngln5-TzVe_b1p2jsy4Gq5UE4RVXTK3cMVWGs/export?format=csv&gid=829535278'
   }
 };
 let currentSource='drive';
@@ -53,7 +56,51 @@ let REPAIR_DATA={exams:[],masters:{engine:[],chassis:[],electric:[]}};
 const CATEGORY={engine:{label:'엔진',emoji:'🚗',badge:'engine'},chassis:{label:'섀시',emoji:'⚙️',badge:'chassis'},electric:{label:'전기',emoji:'⚡',badge:'electric'}};
 const state={view:'examList',selectedExamId:null,currentTaskId:null,currentTaskType:null,search:'',subjectFilter:'all',doneFilter:'all',backView:'examDetail',answerVisible:false};
 const app=document.getElementById('app'),tabExam=document.getElementById('tab-exam'),tabSubject=document.getElementById('tab-subject'),tabQuick=document.getElementById('tab-quick');
+
 const doneKey='repairMasterDoneIds',checkKey='repairMasterStepChecks';
+
+// ===== CSV loading debug helpers =====
+const DEBUG_LOG=[];
+function debugTime(){return new Date().toLocaleTimeString('ko-KR',{hour12:false})}
+function safeDebugString(data){
+  try{
+    if(typeof data==="string") return data;
+    return JSON.stringify(data,null,2);
+  }catch(e){return String(data)}
+}
+function debugLog(message, data){
+  const line=`[${debugTime()}] ${message}${data!==undefined ? "\n" + safeDebugString(data) : ""}`;
+  DEBUG_LOG.push(line);
+  if(DEBUG_LOG.length>120) DEBUG_LOG.shift();
+  console.log("[CSV DEBUG]", message, data ?? "");
+  renderDebugPanel();
+}
+function getDebugText(){return DEBUG_LOG.join("\n\n")}
+function formatDebugText(text){
+  return escapeHtml(text)
+    .replace(/✅/g,'<span class="debug-ok">✅</span>')
+    .replace(/⚠️/g,'<span class="debug-warn">⚠️</span>')
+    .replace(/❌/g,'<span class="debug-error">❌</span>');
+}
+function renderDebugPanel(){
+  const el=document.getElementById("debugPanel");
+  if(el) el.innerHTML=formatDebugText(getDebugText() || "아직 디버그 로그가 없습니다.");
+}
+async function copyDebugLog(){
+  try{await navigator.clipboard.writeText(getDebugText());alert("디버그 로그를 복사했습니다.")}
+  catch(e){alert("복사에 실패했습니다. 화면의 로그를 직접 복사하세요.")}
+}
+function clearDebugLog(){DEBUG_LOG.length=0;renderDebugPanel()}
+function debugPanelHtml(){
+  return `<div class="debug-panel"><b>CSV 로딩 디버그 로그</b>
+<div id="debugPanel">${formatDebugText(getDebugText() || "아직 디버그 로그가 없습니다.")}</div>
+<div class="debug-actions">
+  <button type="button" onclick="reloadCurrentSource()">다시 읽기</button>
+  <button type="button" onclick="copyDebugLog()">로그 복사</button>
+  <button type="button" onclick="clearDebugLog()">로그 지우기</button>
+</div></div>`;
+}
+
 
 function parseCSV(text){
   text=String(text||'').replace(/^\uFEFF/,'');
@@ -107,12 +154,58 @@ function buildData(examRows,taskRows,mediaRows){
     if((r.mediaType||'').trim().toLowerCase()==='video')task.media.videos.push(item);
   });
   const exams=examRows.map(r=>({id:Number(r.examId),title:(r.title||'').trim(),summary:(r.summary||'').trim(),tasks:{engine:splitIds(r.engineIds),chassis:splitIds(r.chassisIds),electric:splitIds(r.electricIds)}})).filter(e=>e.id);
+  const missing=[];
+  exams.forEach(ex=>{
+    Object.entries(ex.tasks).forEach(([category,ids])=>{
+      ids.forEach(id=>{if(!byId[id]) missing.push(`${ex.title || ex.id} / ${category} / ${id}`)});
+    });
+  });
+  if(missing.length) debugLog("⚠️ exams.csv에 있지만 tasks.csv에 없는 과제 ID", missing.slice(0,50));
   return{exams,masters};
 }
-async function fetchText(url){
-  const res=await fetch(url,{cache:'no-store'});
-  if(!res.ok)throw new Error(`${url} 로드 실패: ${res.status}`);
-  return await res.text();
+async function fetchText(url, name='csv'){
+  const started=performance.now();
+  debugLog(`➡️ ${name} 요청 시작`, {url});
+  let res;
+  try{
+    res=await fetch(url,{cache:'no-store', mode:'cors'});
+  }catch(fetchErr){
+    debugLog(`❌ ${name} fetch 자체 실패`, {
+      name: fetchErr.name,
+      message: fetchErr.message,
+      hint: "CORS, 네트워크, 권한, URL 문제일 수 있습니다."
+    });
+    throw fetchErr;
+  }
+
+  const elapsed=Math.round(performance.now()-started);
+  const contentType=res.headers.get('content-type') || '';
+  const finalUrl=res.url || url;
+  debugLog(`⬅️ ${name} 응답 도착`, {
+    ok: res.ok,
+    status: res.status,
+    statusText: res.statusText,
+    contentType,
+    finalUrl,
+    elapsedMs: elapsed
+  });
+
+  let text='';
+  try{text=await res.text()}
+  catch(readErr){
+    debugLog(`❌ ${name} 응답 본문 읽기 실패`, {name: readErr.name, message: readErr.message});
+    throw readErr;
+  }
+
+  const preview=text.slice(0,500);
+  const looksHtml=/^\s*<!doctype html/i.test(text) || /^\s*<html/i.test(text) || text.includes('<title>') || text.includes('<!DOCTYPE html');
+  const looksCsv=text.includes(',') || text.includes('\n');
+  debugLog(`📄 ${name} 본문 확인`, {length:text.length, first500Chars:preview, looksHtml, looksCsv});
+
+  if(!res.ok) throw new Error(`${name} 로드 실패: HTTP ${res.status} ${res.statusText}`);
+  if(looksHtml) throw new Error(`${name} 응답이 CSV가 아니라 HTML입니다. Google Sheet 공유 권한, 웹 게시 여부, gid, URL 형식을 확인하세요.`);
+  if(text.trim().length===0) throw new Error(`${name} CSV 내용이 비어 있습니다.`);
+  return text;
 }
 function getCurrentSources(){return DATA_SOURCES[currentSource]||DATA_SOURCES.local}
 function updateSourceUI(){
@@ -126,8 +219,45 @@ function updateSourceUI(){
 }
 async function loadCsvFromFetch(){
   const src=getCurrentSources();
-  const [exams,tasks,media]=await Promise.all([fetchText(src.exams),fetchText(src.tasks),fetchText(src.media)]);
-  REPAIR_DATA=buildData(parseCSV(exams),parseCSV(tasks),parseCSV(media));
+  debugLog("🚀 데이터 로딩 시작", {
+    source: currentSource,
+    label: src.label,
+    exams: src.exams,
+    tasks: src.tasks,
+    media: src.media,
+    pageUrl: location.href,
+    origin: location.origin
+  });
+
+  const examsText=await fetchText(src.exams,'exams.csv');
+  const tasksText=await fetchText(src.tasks,'tasks.csv');
+  const mediaText=await fetchText(src.media,'media.csv');
+
+  const examRows=parseCSV(examsText);
+  const taskRows=parseCSV(tasksText);
+  const mediaRows=parseCSV(mediaText);
+
+  debugLog("🧾 CSV 파싱 결과", {
+    examsRows: examRows.length,
+    tasksRows: taskRows.length,
+    mediaRows: mediaRows.length,
+    examsColumns: examRows[0] ? Object.keys(examRows[0]) : [],
+    tasksColumns: taskRows[0] ? Object.keys(taskRows[0]) : [],
+    mediaColumns: mediaRows[0] ? Object.keys(mediaRows[0]) : []
+  });
+
+  REPAIR_DATA=buildData(examRows,taskRows,mediaRows);
+
+  debugLog("✅ 데이터 빌드 완료", {
+    exams: REPAIR_DATA.exams.length,
+    engineTasks: REPAIR_DATA.masters.engine.length,
+    chassisTasks: REPAIR_DATA.masters.chassis.length,
+    electricTasks: REPAIR_DATA.masters.electric.length
+  });
+
+  if(!REPAIR_DATA.exams.length) throw new Error("exams.csv에서 안별 데이터를 만들지 못했습니다. 컬럼명 examId,title,summary,engineIds,chassisIds,electricIds를 확인하세요.");
+  const totalTasks=REPAIR_DATA.masters.engine.length+REPAIR_DATA.masters.chassis.length+REPAIR_DATA.masters.electric.length;
+  if(!totalTasks) throw new Error("tasks.csv에서 과제 데이터를 만들지 못했습니다. 컬럼명 id,category,title,answerRequired,steps 등을 확인하세요.");
 }
 async function changeDataSource(source){
   currentSource=source;
@@ -136,7 +266,7 @@ async function changeDataSource(source){
 }
 async function reloadCurrentSource(){
   updateSourceUI();
-  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 다시 불러오는 중입니다...</div>`;
+  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 다시 불러오는 중입니다...</div>${debugPanelHtml()}`;
   try{
     await loadCsvFromFetch();
     state.view='examList';
@@ -152,7 +282,7 @@ function showLoadError(err){
   const localHelp=currentSource==='local'
     ? '브라우저에서 HTML을 직접 더블클릭하면 로컬 CSV 읽기가 막힐 수 있습니다. 같은 폴더에서 <span class="code">python -m http.server</span> 실행 후 <span class="code">http://localhost:8000</span>으로 접속하거나, 아래에서 CSV 3개를 직접 선택하세요.'
     : 'Google Drive 파일은 웹에 공개 또는 링크 접근 허용 상태여야 합니다. Drive 파일이 비공개이거나 CORS/권한 문제로 막히면 로컬 CSV 또는 파일 선택 방식을 사용하세요.';
-  app.innerHTML=`<div class="load-box"><h2 style="margin-top:0">CSV 파일을 불러오지 못했습니다.</h2><p class="summary">선택한 데이터 소스: <b>${escapeHtml(src.label)}</b></p><p class="summary">${localHelp}</p><p class="summary">오류: ${escapeHtml(err.message||err)}</p><div class="chip-row"><button class="chip ${currentSource==='local'?'active':''}" onclick="changeDataSource('local')">로컬 다시 읽기</button><button class="chip ${currentSource==='drive'?'active':''}" onclick="changeDataSource('drive')">Google Drive 다시 읽기</button></div><div class="file-grid"><label>exams.csv<input id="fileExams" type="file" accept=".csv,text/csv"></label><label>tasks.csv<input id="fileTasks" type="file" accept=".csv,text/csv"></label><label>media.csv<input id="fileMedia" type="file" accept=".csv,text/csv"></label><button class="btn btn-primary" type="button" onclick="loadCsvFromFiles()">CSV 파일로 열기</button></div></div>`;
+  app.innerHTML=`<div class="load-box"><h2 style="margin-top:0">CSV 파일을 불러오지 못했습니다.</h2><p class="summary">선택한 데이터 소스: <b>${escapeHtml(src.label)}</b></p><p class="summary">${localHelp}</p><p class="summary">오류: ${escapeHtml(err.message||err)}</p><div class="chip-row"><button class="chip ${currentSource==='local'?'active':''}" onclick="changeDataSource('local')">로컬 다시 읽기</button><button class="chip ${currentSource==='drive'?'active':''}" onclick="changeDataSource('drive')">Google Drive 다시 읽기</button></div><div class="file-grid"><label>exams.csv<input id="fileExams" type="file" accept=".csv,text/csv"></label><label>tasks.csv<input id="fileTasks" type="file" accept=".csv,text/csv"></label><label>media.csv<input id="fileMedia" type="file" accept=".csv,text/csv"></label><button class="btn btn-primary" type="button" onclick="loadCsvFromFiles()">CSV 파일로 열기</button></div>${debugPanelHtml()}</div>`;
   updateSourceUI();
 }
 function readFileInput(id){return new Promise((resolve,reject)=>{const file=document.getElementById(id)?.files?.[0];if(!file){reject(new Error(`${id} 파일을 선택하세요.`));return}const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error);reader.readAsText(file,'utf-8')})}
@@ -163,13 +293,13 @@ async function loadCsvFromFiles(){
     render();
   }catch(err){alert(err.message||err)}
 }
-async async function init(){
+async function init(){
   // 기본 데이터 소스는 Google Drive입니다.
   // 사용자가 화면에서 로컬을 선택한 경우에만 그 선택값을 저장해 다음 접속 때 사용합니다.
   currentSource=localStorage.getItem('repairMasterDataSource')||'drive';
   if(!DATA_SOURCES[currentSource]) currentSource='drive';
   updateSourceUI();
-  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 불러오는 중입니다...</div>`;
+  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 불러오는 중입니다...</div>${debugPanelHtml()}`;
   try{
     await loadCsvFromFetch();
     state.view='examList';
