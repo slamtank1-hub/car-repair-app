@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>자동차정비기능사 실기 안별 과제 마스터</title>
+  <style>
+    :root{--primary:#0284c7;--primary-dark:#0369a1;--primary-soft:#e0f2fe;--secondary:#475569;--text:#0f172a;--muted:#64748b;--bg:#f8fafc;--card:#fff;--line:#e2e8f0;--warn-bg:#fff7ed;--warn-line:#fdba74;--answer-bg:#f0f9ff;--success:#16a34a;--danger:#dc2626;--shadow:0 8px 22px rgba(15,23,42,.08)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",Arial,sans-serif;background:var(--bg);color:var(--text);padding-bottom:32px}
+    header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:16px 18px 14px;box-shadow:0 4px 14px rgba(2,132,199,.25)}
+    .header-inner,.tabs,.container{max-width:760px;margin:0 auto}
+    .app-title{font-size:1.05rem;font-weight:800;margin:0 0 4px}.app-subtitle{margin:0;font-size:.78rem;opacity:.9;line-height:1.4}
+    .tabs-wrap{position:sticky;top:72px;z-index:90;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .tabs{display:flex}.tab{flex:1;border:0;background:transparent;padding:13px 6px;font-weight:800;color:#94a3b8;cursor:pointer;border-bottom:3px solid transparent;font-size:.88rem}.tab.active{color:var(--primary);border-bottom-color:var(--primary);background:#f0f9ff}
+    .container{padding:14px}.toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:12px}.search{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:14px;font-size:1rem;outline:none;background:white}.search:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+    .chip-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin:8px 0}.chip{border:1px solid var(--line);background:white;color:var(--secondary);border-radius:999px;padding:8px 12px;white-space:nowrap;font-weight:700;cursor:pointer}.chip.active{background:var(--primary);border-color:var(--primary);color:white}.chip.done-active{background:var(--success);border-color:var(--success);color:white}.chip.todo-active{background:#f97316;border-color:#f97316;color:white}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:11px;box-shadow:0 2px 8px rgba(15,23,42,.04);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}.card:hover{transform:translateY(-1px);box-shadow:var(--shadow);border-color:#bae6fd}
+    .card-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;font-weight:850;line-height:1.35}.summary{color:var(--muted);font-size:.88rem;line-height:1.5;margin-top:7px}.meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+    .badge{font-size:.72rem;font-weight:800;padding:5px 8px;border-radius:999px;background:#f1f5f9;color:var(--secondary)}.badge.engine{background:#ecfeff;color:#0e7490}.badge.chassis{background:#f1f5f9;color:#475569}.badge.electric{background:#fef9c3;color:#a16207}.badge.done{background:#dcfce7;color:#15803d}.badge.todo{background:#ffedd5;color:#c2410c}.unit{display:inline-block;background:#fef3c7;color:#92400e;border-radius:8px;padding:1px 5px;font-weight:900}
+    .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0 9px;padding:10px 12px;border-radius:12px;background:#eef6fb;color:#164e63;font-weight:900}.count{color:var(--muted);font-size:.8rem}.empty{text-align:center;color:var(--muted);padding:36px 10px}.btn{border:0;border-radius:12px;padding:12px 14px;font-weight:850;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}.btn-back{width:100%;background:var(--secondary);color:white;margin-bottom:14px}.btn-primary{background:var(--primary);color:white}.btn-yt{background:var(--danger);color:white;width:100%;margin-top:8px}.btn-ghost{background:#f1f5f9;color:var(--secondary)}.btn-green{background:var(--success);color:white}
+    .detail-card{background:white;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}.detail-title{margin:0 0 4px;color:var(--primary-dark);font-size:1.25rem;line-height:1.35}.detail-id{color:var(--muted);font-size:.82rem;font-weight:800}.alert{margin:16px 0;padding:13px;border-radius:14px;background:var(--warn-bg);border:1px solid var(--warn-line);line-height:1.55;font-weight:700;color:#9a3412}.section-title{display:block;margin-top:20px;border-left:4px solid var(--primary);padding-left:9px;font-weight:900}
+    .multiline{white-space:pre-line;line-height:1.6}
+    .steps{list-style:none;padding:0;margin:10px 0 0;counter-reset:step}.steps li{counter-increment:step;margin:8px 0;padding:11px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;line-height:1.45;display:flex;gap:10px;align-items:flex-start}.steps li::before{content:counter(step);min-width:22px;height:22px;border-radius:50%;background:var(--primary);color:white;font-weight:900;font-size:.78rem;display:flex;align-items:center;justify-content:center}.steps input{width:24px;height:24px;flex:0 0 auto}.steps label{flex:1}.steps input:checked+label{text-decoration:line-through;color:var(--muted)}
+    .answer-box{background:var(--answer-bg);border:1px solid #bae6fd;border-radius:14px;padding:14px;margin-top:10px;line-height:1.55;font-weight:800;color:#075985}.answer-box.hidden{filter:blur(5px);user-select:none}.media-img{width:100%;border-radius:14px;border:1px solid var(--line);margin-top:10px;display:block;background:white}.media-title{font-weight:850;margin:10px 0 6px}.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.quick-table{width:100%;border-collapse:separate;border-spacing:0 8px}.quick-table th{text-align:left;font-size:.78rem;color:var(--muted);padding:4px}.quick-table td{background:white;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 8px;font-size:.88rem}.quick-table td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px;font-weight:900;color:var(--primary-dark)}.quick-table td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}.flash-hint{font-size:.82rem;color:var(--muted);margin-top:7px}
+    .source-switch{position:absolute;right:18px;top:14px;display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.14);padding:5px;border-radius:999px}.source-switch button{border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:white;border-radius:999px;padding:7px 9px;font-size:.72rem;font-weight:900;cursor:pointer}.source-switch button.active{background:white;color:var(--primary-dark);border-color:white}.source-status{font-size:.72rem;opacity:.92;margin-top:4px}.source-status b{color:white}.reload-mini{font-size:.72rem;text-decoration:underline;cursor:pointer;color:white;opacity:.95}@media (max-width:560px){.source-switch{position:static;margin-top:10px;justify-content:flex-end}.app-title{padding-right:0}}
+    .footer-notice{max-width:760px;margin:24px auto 0;padding:16px 18px;color:#64748b;font-size:.78rem;line-height:1.55;border-top:1px solid #e2e8f0}.footer-notice p{margin:6px 0}
+    .load-box{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:10px;box-shadow:var(--shadow)}.file-grid{display:grid;gap:10px;margin-top:12px}.file-grid label{font-weight:800;font-size:.88rem;color:var(--secondary)}.file-grid input{width:100%;padding:10px;background:#f8fafc;border:1px solid var(--line);border-radius:10px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f1f5f9;padding:2px 6px;border-radius:6px}
+    @media (min-width:680px){.exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.exam-grid .card{margin-bottom:0}}
+  </style>
+</head>
+<body>
+<header><div class="header-inner" style="position:relative"><h1 class="app-title">자동차정비기능사 실기 마스터</h1><p class="app-subtitle">CSV 데이터 기반 · 안별 구성 · 과목별 전체 · Quick View · 체크리스트</p><div class="source-switch" aria-label="데이터 소스 선택"><button id="src-local" type="button" onclick="changeDataSource('local')">로컬</button><button id="src-drive" type="button" onclick="changeDataSource('drive')">Google Drive</button></div><div class="source-status">현재 데이터: <b id="sourceLabel">Google Drive</b> <span class="reload-mini" onclick="reloadCurrentSource()">다시 읽기</span></div></div></header>
+<div class="tabs-wrap"><div class="tabs"><button id="tab-exam" class="tab active" type="button">안별 보기</button><button id="tab-subject" class="tab" type="button">과목별 전체</button><button id="tab-quick" class="tab" type="button">Quick View</button></div></div>
+<main class="container" id="app"></main>
+<footer class="footer-notice">
+  <p>본 자료는 한국폴리텍대학 중장년 과정 자동차정비기능사 실기 시험 준비를 위한 학습용 참고자료입니다.</p>
+  <p>자료는 자유롭게 수정 및 확장하여 사용할 수 있으나, 외부 공개 또는 재배포 시 포함된 이미지·동영상 등 외부 콘텐츠의 저작권을 반드시 확인하시기 바랍니다.</p>
+  <p>본 자료의 활용으로 인해 발생하는 결과에 대한 책임은 사용자에게 있으며, 자료의 정확성 및 완전성에 대해 법적 책임을 지지 않습니다.</p>
+</footer>
+<script>
+const DATA_SOURCES={
+  local:{label:'로컬 CSV',exams:'exams.csv',tasks:'tasks.csv',media:'media.csv'},
+  drive:{
+    label:'Google Drive',
+ //   exams:'https://docs.google.com/file/d/19y4oGvXNxh9CtbJRl0w0-NB9Juny4G9p/export?format=csv&gid=0',
+ //     exams:'https://docs.google.com/spreadsheets/d/140_X1ujw3BEG9Lc_jE3QtPTPq0RyJTKWWjvhf2Oi_BE/export?format=csv&gid=0',
+      exams:'https://docs.google.com/spreadsheets/d/140_X1ujw3BEG9Lc_jE3QtPTPq0RyJTKWWjvhf2Oi_BE',
+//    tasks:'https://drive.google.com/file/d/1QmMTur3RhAJU71aUtnl7wzMoJ2mGbyYG/export?format=csv&gid=0',
+//      exams:'https://docs.google.com/spreadsheets/d/140_X1ujw3BEG9Lc_jE3QtPTPq0RyJTKWWjvhf2Oi_BE/export?format=csv&gid=0',
+      exams:'https://docs.google.com/spreadsheets/d/140_X1ujw3BEG9Lc_jE3QtPTPq0RyJTKWWjvhf2Oi_BE',
+//    media:'https://drive.google.com/file/d/1uHI4RkYX47B5gn7xYE6rMQTBso4dD-EQ/export?format=csv&gid=0'
+//    media:'https://docs.google.com/spreadsheets/d/1f0pWJ1ngln5-TzVe_b1p2jsy4Gq5UE4RVXTK3cMVWGs/export?format=csv&gid=0'
+    media:'https://docs.google.com/spreadsheets/d/1f0pWJ1ngln5-TzVe_b1p2jsy4Gq5UE4RVXTK3cMVWGs'
+
+
+
+
+  }
+};
+let currentSource='drive';
+let REPAIR_DATA={exams:[],masters:{engine:[],chassis:[],electric:[]}};
+const CATEGORY={engine:{label:'엔진',emoji:'🚗',badge:'engine'},chassis:{label:'섀시',emoji:'⚙️',badge:'chassis'},electric:{label:'전기',emoji:'⚡',badge:'electric'}};
+const state={view:'examList',selectedExamId:null,currentTaskId:null,currentTaskType:null,search:'',subjectFilter:'all',doneFilter:'all',backView:'examDetail',answerVisible:false};
+const app=document.getElementById('app'),tabExam=document.getElementById('tab-exam'),tabSubject=document.getElementById('tab-subject'),tabQuick=document.getElementById('tab-quick');
+const doneKey='repairMasterDoneIds',checkKey='repairMasterStepChecks';
+
+function parseCSV(text){
+  text=String(text||'').replace(/^\uFEFF/,'');
+  const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+    if(q){
+      if(c==='"'&&n==='"'){cur+='"';i++}
+      else if(c==='"'){q=false}
+      else cur+=c;
+    }else{
+      if(c==='"')q=true;
+      else if(c===','){row.push(cur);cur=''}
+      else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur=''}
+      else if(c==='\r'){}
+      else cur+=c;
+    }
+  }
+  row.push(cur);rows.push(row);
+  while(rows.length&&rows[rows.length-1].every(v=>!String(v).trim()))rows.pop();
+  if(!rows.length)return[];
+  const headers=rows.shift().map(h=>String(h||'').trim().replace(/^\uFEFF/,''));
+  return rows.filter(r=>r.some(v=>String(v||'').trim())).map(r=>{
+    const o={};headers.forEach((h,i)=>o[h]=r[i]??'');return o;
+  });
+}
+function splitIds(value){return String(value||'').split(/[|,]/).map(v=>v.trim()).filter(Boolean)}
+function splitSteps(value){const s=String(value||'').trim();if(!s)return[];return s.includes('|')?s.split('|').map(v=>v.trim()).filter(Boolean):s.split(/\n+/).map(v=>v.trim()).filter(Boolean)}
+function isYes(value){return ['O','Y','YES','TRUE','1','필요','예'].includes(String(value||'').trim().toUpperCase())}
+function sortByOrder(a,b){return (Number(a.sortOrder)||999)-(Number(b.sortOrder)||999)}
+function defaultHighlight(id){if(id.includes('_P'))return'측정 전 영점 확인, 단위, 규정값 비교를 반드시 확인하세요.';if(id.includes('_S'))return'시동·수리 작업은 안전 확인 후 진행하고, 완료 후 작동 상태를 확인하세요.';if(id.includes('_D'))return'고장코드는 확인 후 기록하고, 삭제 전 원인을 먼저 판단하세요.';if(id.includes('_M'))return'측정 장비 예열·안정화 후 측정값과 단위를 정확히 기록하세요.';return'분해 순서, 볼트 위치, 체결 방향을 기억하고 조립 전 손상 여부를 확인하세요.'}
+function buildData(examRows,taskRows,mediaRows){
+  const masters={engine:[],chassis:[],electric:[]};
+  const byId={};
+  taskRows.forEach(r=>{
+    const category=(r.category||'').trim();
+    if(!masters[category])return;
+    const task={id:(r.id||'').trim(),title:(r.title||'').trim(),answerRequired:isYes(r.answerRequired),tasks:splitSteps(r.steps),answer:(r.cardAnswer||'').trim(),highlight:(r.highlight||'').trim(),answerGuide:(r.answerGuide||'').trim(),media:{images:[],videos:[]}};
+    if(!task.id)return;
+    if(!task.highlight)task.highlight=defaultHighlight(task.id);
+    if(!task.answerRequired)delete task.answer;
+    masters[category].push(task);
+    byId[task.id]=task;
+  });
+  mediaRows.sort(sortByOrder).forEach(r=>{
+    const task=byId[(r.taskId||'').trim()];
+    if(!task)return;
+    const item={title:(r.title||'').trim(),url:(r.url||'').trim()};
+    if(!item.url)return;
+    if((r.mediaType||'').trim().toLowerCase()==='image')task.media.images.push(item);
+    if((r.mediaType||'').trim().toLowerCase()==='video')task.media.videos.push(item);
+  });
+  const exams=examRows.map(r=>({id:Number(r.examId),title:(r.title||'').trim(),summary:(r.summary||'').trim(),tasks:{engine:splitIds(r.engineIds),chassis:splitIds(r.chassisIds),electric:splitIds(r.electricIds)}})).filter(e=>e.id);
+  return{exams,masters};
+}
+async function fetchText(url){
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw new Error(`${url} 로드 실패: ${res.status}`);
+  return await res.text();
+}
+function getCurrentSources(){return DATA_SOURCES[currentSource]||DATA_SOURCES.local}
+function updateSourceUI(){
+  const src=getCurrentSources();
+  const label=document.getElementById('sourceLabel');
+  if(label) label.textContent=src.label;
+  const localBtn=document.getElementById('src-local');
+  const driveBtn=document.getElementById('src-drive');
+  if(localBtn) localBtn.classList.toggle('active',currentSource==='local');
+  if(driveBtn) driveBtn.classList.toggle('active',currentSource==='drive');
+}
+async function loadCsvFromFetch(){
+  const src=getCurrentSources();
+  const [exams,tasks,media]=await Promise.all([fetchText(src.exams),fetchText(src.tasks),fetchText(src.media)]);
+  REPAIR_DATA=buildData(parseCSV(exams),parseCSV(tasks),parseCSV(media));
+}
+async function changeDataSource(source){
+  currentSource=source;
+  localStorage.setItem('repairMasterDataSource',source);
+  await reloadCurrentSource();
+}
+async function reloadCurrentSource(){
+  updateSourceUI();
+  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 다시 불러오는 중입니다...</div>`;
+  try{
+    await loadCsvFromFetch();
+    state.view='examList';
+    state.selectedExamId=null;
+    state.currentTaskId=null;
+    state.currentTaskType=null;
+    state.answerVisible=false;
+    render();
+  }catch(err){showLoadError(err)}
+}
+function showLoadError(err){
+  const src=getCurrentSources();
+  const localHelp=currentSource==='local'
+    ? '브라우저에서 HTML을 직접 더블클릭하면 로컬 CSV 읽기가 막힐 수 있습니다. 같은 폴더에서 <span class="code">python -m http.server</span> 실행 후 <span class="code">http://localhost:8000</span>으로 접속하거나, 아래에서 CSV 3개를 직접 선택하세요.'
+    : 'Google Drive 파일은 웹에 공개 또는 링크 접근 허용 상태여야 합니다. Drive 파일이 비공개이거나 CORS/권한 문제로 막히면 로컬 CSV 또는 파일 선택 방식을 사용하세요.';
+  app.innerHTML=`<div class="load-box"><h2 style="margin-top:0">CSV 파일을 불러오지 못했습니다.</h2><p class="summary">선택한 데이터 소스: <b>${escapeHtml(src.label)}</b></p><p class="summary">${localHelp}</p><p class="summary">오류: ${escapeHtml(err.message||err)}</p><div class="chip-row"><button class="chip ${currentSource==='local'?'active':''}" onclick="changeDataSource('local')">로컬 다시 읽기</button><button class="chip ${currentSource==='drive'?'active':''}" onclick="changeDataSource('drive')">Google Drive 다시 읽기</button></div><div class="file-grid"><label>exams.csv<input id="fileExams" type="file" accept=".csv,text/csv"></label><label>tasks.csv<input id="fileTasks" type="file" accept=".csv,text/csv"></label><label>media.csv<input id="fileMedia" type="file" accept=".csv,text/csv"></label><button class="btn btn-primary" type="button" onclick="loadCsvFromFiles()">CSV 파일로 열기</button></div></div>`;
+  updateSourceUI();
+}
+function readFileInput(id){return new Promise((resolve,reject)=>{const file=document.getElementById(id)?.files?.[0];if(!file){reject(new Error(`${id} 파일을 선택하세요.`));return}const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error);reader.readAsText(file,'utf-8')})}
+async function loadCsvFromFiles(){
+  try{
+    const [exams,tasks,media]=await Promise.all([readFileInput('fileExams'),readFileInput('fileTasks'),readFileInput('fileMedia')]);
+    REPAIR_DATA=buildData(parseCSV(exams),parseCSV(tasks),parseCSV(media));
+    render();
+  }catch(err){alert(err.message||err)}
+}
+async async function init(){
+  // 기본 데이터 소스는 Google Drive입니다.
+  // 사용자가 화면에서 로컬을 선택한 경우에만 그 선택값을 저장해 다음 접속 때 사용합니다.
+  currentSource=localStorage.getItem('repairMasterDataSource')||'drive';
+  if(!DATA_SOURCES[currentSource]) currentSource='drive';
+  updateSourceUI();
+  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 불러오는 중입니다...</div>`;
+  try{
+    await loadCsvFromFetch();
+    state.view='examList';
+    state.selectedExamId=null;
+    state.currentTaskId=null;
+    state.currentTaskType=null;
+    state.answerVisible=false;
+    render();
+  }catch(err){
+    showLoadError(err);
+  }
+}
+function getDoneIds(){try{return JSON.parse(localStorage.getItem(doneKey)||'[]')}catch{return[]}}
+function setDoneIds(ids){localStorage.setItem(doneKey,JSON.stringify(ids))}
+function isDone(id){return getDoneIds().includes(id)}
+function toggleDone(id){const ids=getDoneIds();setDoneIds(ids.includes(id)?ids.filter(x=>x!==id):[...ids,id]);renderTaskDetailBody()}
+function getChecks(){try{return JSON.parse(localStorage.getItem(checkKey)||'{}')}catch{return{}}}
+function setChecks(v){localStorage.setItem(checkKey,JSON.stringify(v))}
+function stepChecked(id,i){return !!getChecks()[id]?.[i]}
+function toggleStep(id,i){const c=getChecks();c[id]=c[id]||{};c[id][i]=!c[id][i];setChecks(c)}
+function resetSteps(id){const c=getChecks();delete c[id];setChecks(c);renderTaskDetailBody()}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function highlightUnits(text){return escapeHtml(text).replace(/(kg\/cm²|kg\/cm2|m\/km|MPa|kgf|cd|dB|Ω|V|A|mm|ppm|%|CO|HC)/g,'<span class="unit">$1</span>')}
+function normalizeTask(t,type){return {...t,answerRequired:t.answerRequired===true,type}}
+function getAllTasks(){return Object.entries(REPAIR_DATA.masters).flatMap(([type,list])=>list.map(t=>normalizeTask(t,type)))}
+function findTask(type,id){const t=REPAIR_DATA.masters[type]?.find(x=>x.id===id);return t?normalizeTask(t,type):null}
+function setActiveTab(){tabExam.classList.toggle('active',state.view==='examList'||state.view==='examDetail'||(state.view==='taskDetail'&&state.backView==='examDetail'));tabSubject.classList.toggle('active',state.view==='subjectList'||(state.view==='taskDetail'&&state.backView==='subjectList'));tabQuick.classList.toggle('active',state.view==='quickView'||(state.view==='taskDetail'&&state.backView==='quickView'))}
+function setTab(view){state.view=view;state.selectedExamId=null;state.currentTaskId=null;state.currentTaskType=null;state.answerVisible=false;render()}
+function render(){setActiveTab();app.innerHTML='';if(state.view==='examList')renderExamList();if(state.view==='examDetail')renderExamDetail();if(state.view==='subjectList')renderSubjectList();if(state.view==='quickView')renderQuickView();if(state.view==='taskDetail')renderTaskDetailBody();window.scrollTo(0,0)}
+function searchToolbar(placeholder){return `<div class="toolbar"><input class="search" id="search" placeholder="${placeholder}" value="${escapeHtml(state.search)}" autocomplete="off"/><button class="btn btn-ghost" type="button" onclick="resetSearch()">초기화</button></div>`}
+function bindSearch(renderListFn){const input=document.getElementById('search');if(!input)return;input.addEventListener('input',e=>{state.search=e.target.value;renderListFn();});}
+function renderExamList(){setActiveTab();app.innerHTML=searchToolbar('예: 5안, 피스톤, 전조등')+`<div class="summary">학습 완료 표시: ${getDoneIds().length}개 · 데이터 소스: ${escapeHtml(getCurrentSources().label)}</div><div class="exam-grid" id="examList"></div>`;bindSearch(renderExamListItems);renderExamListItems();updateSourceUI()}
+function renderExamListItems(){const list=document.getElementById('examList');if(!list)return;const q=state.search.trim().toLowerCase();const exams=REPAIR_DATA.exams.filter(ex=>!q||`${ex.id} ${ex.title} ${ex.summary}`.toLowerCase().includes(q));list.innerHTML='';if(!exams.length){list.innerHTML='<div class="empty">검색 결과가 없습니다.</div>';return}exams.forEach(ex=>{const count=Object.values(ex.tasks).reduce((s,a)=>s+a.length,0);list.insertAdjacentHTML('beforeend',`<article class="card" onclick="goExamDetail(${ex.id})"><div class="card-title"><span>${escapeHtml(ex.title)} 과제 구성</span><span class="count">${count}개</span></div><div class="summary">${escapeHtml(ex.summary)}</div><div class="meta"><span class="badge engine">엔진 ${ex.tasks.engine.length}</span><span class="badge chassis">섀시 ${ex.tasks.chassis.length}</span><span class="badge electric">전기 ${ex.tasks.electric.length}</span></div></article>`)})}
+function goExamDetail(id){state.view='examDetail';state.selectedExamId=id;state.answerVisible=false;render()}
+function goTaskDetail(type,id,fromView){state.view='taskDetail';state.currentTaskType=type;state.currentTaskId=id;state.backView=fromView||'examDetail';state.answerVisible=false;render()}
+function renderExamDetail(){setActiveTab();const ex=REPAIR_DATA.exams.find(e=>e.id===state.selectedExamId);if(!ex)return setTab('examList');app.innerHTML=`<button class="btn btn-back" type="button" onclick="setTab('examList')">← 안별 리스트로</button><h2 style="margin:4px 0 2px;">${escapeHtml(ex.title)} 상세 구성</h2><div class="summary">${escapeHtml(ex.summary)}</div>`;Object.keys(CATEGORY).forEach(type=>{const ids=ex.tasks[type]||[];app.insertAdjacentHTML('beforeend',`<div class="section-head"><span>${CATEGORY[type].emoji} ${CATEGORY[type].label}</span><span class="count">${ids.length}개</span></div>`);ids.forEach(id=>{const task=findTask(type,id);app.insertAdjacentHTML('beforeend',task?taskCardHtml(task,'examDetail'):`<div class="card">등록 대기: ${escapeHtml(id)}</div>`)})})}
+function renderSubjectList(){setActiveTab();app.innerHTML=searchToolbar('과제명, ID, 답안 키워드 검색')+`<div class="chip-row"><button class="chip ${state.subjectFilter==='all'?'active':''}" onclick="setSubjectFilter('all')">전체</button><button class="chip ${state.subjectFilter==='engine'?'active':''}" onclick="setSubjectFilter('engine')">엔진</button><button class="chip ${state.subjectFilter==='chassis'?'active':''}" onclick="setSubjectFilter('chassis')">섀시</button><button class="chip ${state.subjectFilter==='electric'?'active':''}" onclick="setSubjectFilter('electric')">전기</button></div><div class="chip-row"><button class="chip ${state.doneFilter==='all'?'active':''}" onclick="setDoneFilter('all')">완료 전체</button><button class="chip ${state.doneFilter==='done'?'done-active':''}" onclick="setDoneFilter('done')">완료</button><button class="chip ${state.doneFilter==='todo'?'todo-active':''}" onclick="setDoneFilter('todo')">미완료</button></div><div id="subjectList"></div>`;bindSearch(renderSubjectListItems);renderSubjectListItems()}
+function setSubjectFilter(value){state.subjectFilter=value;renderSubjectList()}
+function setDoneFilter(value){state.doneFilter=(state.doneFilter===value&&value!=='all')?'all':value;renderSubjectList()}
+function renderSubjectListItems(){const target=document.getElementById('subjectList');if(!target)return;const q=state.search.trim().toLowerCase();let tasks=getAllTasks().filter(t=>{const cardAnswer=t.answer||'';const hay=`${t.id} ${t.title} ${cardAnswer} ${t.answerGuide||''} ${t.highlight||''} ${t.tasks.join(' ')}`.toLowerCase();const okSearch=!q||hay.includes(q);const okType=state.subjectFilter==='all'||t.type===state.subjectFilter;const okDone=state.doneFilter==='all'||(state.doneFilter==='done'?isDone(t.id):!isDone(t.id));return okSearch&&okType&&okDone});target.innerHTML='';if(!tasks.length){target.innerHTML='<div class="empty">표시할 과제가 없습니다.</div>';return}Object.keys(CATEGORY).forEach(type=>{const group=tasks.filter(t=>t.type===type);if(!group.length)return;target.insertAdjacentHTML('beforeend',`<div class="section-head"><span>${CATEGORY[type].emoji} ${CATEGORY[type].label}</span><span class="count">${group.length}개</span></div>`);group.forEach(task=>target.insertAdjacentHTML('beforeend',taskCardHtml(task,'subjectList')))})}
+function taskCardHtml(task,fromView){const cardSummary=task.answerRequired?`답안 작성 필요: ${highlightUnits(task.answer||'상세 답안 가이드는 상세 화면에서 확인')}`:'답안 작성 없음';return `<article class="card" onclick="goTaskDetail('${task.type}','${task.id}','${fromView}')"><div class="card-title"><span>${escapeHtml(task.title)}</span><span class="badge ${CATEGORY[task.type].badge}">${task.id}</span></div><div class="summary">${cardSummary}</div><div class="meta"><span class="badge ${CATEGORY[task.type].badge}">${CATEGORY[task.type].label}</span><span class="badge">절차 ${task.tasks.length}단계</span><span class="badge ${task.answerRequired?'done':''}">답안 ${task.answerRequired?'O':'X'}</span>${isDone(task.id)?'<span class="badge done">완료</span>':'<span class="badge todo">미완료</span>'}</div></article>`}
+function renderQuickView(){setActiveTab();const rows=REPAIR_DATA.exams.map(ex=>{const tasks=Object.entries(ex.tasks).flatMap(([type,ids])=>ids.map(id=>findTask(type,id)).filter(Boolean));const quick=tasks.filter(t=>/_S|_D|_P|_M/.test(t.id));return {ex,quick}});app.innerHTML='<div class="summary">시험 직전 5분 확인용: 시동, 자기진단, 측정, 배출가스 항목만 모았습니다.</div><table class="quick-table"><thead><tr><th>안</th><th>긴급 확인 항목</th></tr></thead><tbody id="quickBody"></tbody></table>';const body=document.getElementById('quickBody');rows.forEach(({ex,quick})=>{body.insertAdjacentHTML('beforeend',`<tr><td>${ex.title}</td><td>${quick.map(t=>`<div style="margin:5px 0;cursor:pointer" onclick="goTaskDetail('${t.type}','${t.id}','quickView')"><b>${escapeHtml(t.title)}</b> <span class="badge ${CATEGORY[t.type].badge}">${t.id}</span><br><span class="summary">${t.answerRequired?highlightUnits(t.answer||t.answerGuide||'답안 가이드 확인'):'답안 작성 없음'}</span></div>`).join('')}</td></tr>`)})}
+function renderTaskDetailBody(){setActiveTab();const t=findTask(state.currentTaskType,state.currentTaskId);if(!t)return setTab('examList');const backAction=state.backView==='subjectList'?"setTab('subjectList')":state.backView==='quickView'?"setTab('quickView')":"state.view='examDetail'; render()";const media=t.media||{images:[],videos:[]};app.innerHTML=`<button class="btn btn-back" type="button" onclick="${backAction}">← 리스트로</button><section class="detail-card"><h2 class="detail-title">${escapeHtml(t.title)}</h2><div class="detail-id">${CATEGORY[t.type].label} · ${escapeHtml(t.id)}</div><div class="alert multiline">핵심 포인트: ${escapeHtml(t.highlight||'')}</div><span class="section-title">수행 절차 체크리스트</span><ol class="steps">${t.tasks.map((step,i)=>`<li><input type="checkbox" ${stepChecked(t.id,i)?'checked':''} onchange="toggleStep('${t.id}',${i})"><label>${escapeHtml(step)}</label></li>`).join('')}</ol><button class="btn btn-ghost" style="width:100%;margin-top:8px" type="button" onclick="resetSteps('${t.id}')">체크 초기화</button>${renderAnswerSection(t)}<span class="section-title">참조 이미지 및 영상</span>${renderMedia(media,t)}<div class="detail-actions"><button class="btn btn-green" type="button" onclick="toggleDone('${t.id}')">${isDone(t.id)?'완료 해제':'학습 완료'}</button><button class="btn btn-ghost" type="button" onclick="copyAnswer('${t.id}')">답안 복사</button></div></section>`}
+function renderAnswerSection(t){if(!t.answerRequired){return '<div class="summary" style="margin-top:18px">답안 작성이 필요 없는 항목으로 답안지 작성 가이드를 표시하지 않습니다.</div>'}const guide=t.answerGuide||t.answer||'상세 답안 가이드가 아직 등록되지 않았습니다.';return `<span class="section-title">답안지 작성 가이드</span><button class="btn btn-primary" style="width:100%;margin-top:10px" type="button" onclick="state.answerVisible=!state.answerVisible; renderTaskDetailBody()">${state.answerVisible?'답안 가리기':'답안 보기'}</button><div class="answer-box multiline ${state.answerVisible?'':'hidden'}">${highlightUnits(guide)}</div><div class="flash-hint">암기 모드: 답안을 먼저 떠올린 뒤 버튼을 눌러 확인하세요.</div>`}
+function renderMedia(media,t){const images=Array.isArray(media.images)?media.images:[];const videos=Array.isArray(media.videos)?media.videos:[];let html='';if(!images.length&&!videos.length)html+='<div class="summary">등록된 참조 이미지/영상이 없습니다. media.csv에 추가할 수 있습니다.</div>';images.forEach((img,idx)=>{html+=`<div class="media-title">이미지 ${idx+1}. ${escapeHtml(img.title||'참조 이미지')}</div><img class="media-img" src="${escapeHtml(img.url)}" alt="${escapeHtml(img.title||t.title)}">`});videos.forEach((v,idx)=>{html+=`<a class="btn btn-yt" href="${escapeHtml(v.url)}" target="_blank" rel="noopener">영상 ${idx+1}. ${escapeHtml(v.title||'참조 영상')}</a>`});return html}
+function copyAnswer(id){const t=getAllTasks().find(x=>x.id===id);if(!t)return;const guide=t.answerGuide||t.answer||'';navigator.clipboard?.writeText(t.answerRequired?`[${t.id}] ${t.title}\n답안: ${guide}`:`[${t.id}] ${t.title}\n답안 작성 없음`);alert(t.answerRequired?'답안 내용을 복사했습니다.':'답안 작성 없음으로 복사했습니다.')}
+function resetSearch(){state.search='';render()}
+tabExam.addEventListener('click',()=>setTab('examList'));tabSubject.addEventListener('click',()=>setTab('subjectList'));tabQuick.addEventListener('click',()=>setTab('quickView'));
+init();
+</script>
+</body>
+</html>
