@@ -117,47 +117,31 @@ function buildData(examRows,taskRows,mediaRows){
       ids.forEach(id=>{if(!byId[id]) missing.push(`${ex.title || ex.id} / ${category} / ${id}`)});
     });
   });
-  if(missing.length) debugLog("⚠️ exams.csv에 있지만 tasks.csv에 없는 과제 ID", missing.slice(0,50));
+  if(missing.length)
   return{exams,masters};
 }
 async function fetchText(url, name='csv'){
   const started=performance.now();
-  debugLog(`➡️ ${name} 요청 시작`, {url});
   let res;
   try{
     res=await fetch(url,{cache:'no-store', mode:'cors'});
   }catch(fetchErr){
-    debugLog(`❌ ${name} fetch 자체 실패`, {
-      name: fetchErr.name,
-      message: fetchErr.message,
-      hint: "CORS, 네트워크, 권한, URL 문제일 수 있습니다."
-    });
     throw fetchErr;
   }
 
   const elapsed=Math.round(performance.now()-started);
   const contentType=res.headers.get('content-type') || '';
   const finalUrl=res.url || url;
-  debugLog(`⬅️ ${name} 응답 도착`, {
-    ok: res.ok,
-    status: res.status,
-    statusText: res.statusText,
-    contentType,
-    finalUrl,
-    elapsedMs: elapsed
-  });
 
   let text='';
   try{text=await res.text()}
   catch(readErr){
-    debugLog(`❌ ${name} 응답 본문 읽기 실패`, {name: readErr.name, message: readErr.message});
     throw readErr;
   }
 
   const preview=text.slice(0,500);
   const looksHtml=/^\s*<!doctype html/i.test(text) || /^\s*<html/i.test(text) || text.includes('<title>') || text.includes('<!DOCTYPE html');
   const looksCsv=text.includes(',') || text.includes('\n');
-  debugLog(`📄 ${name} 본문 확인`, {length:text.length, first500Chars:preview, looksHtml, looksCsv});
 
   if(!res.ok) throw new Error(`${name} 로드 실패: HTTP ${res.status} ${res.statusText}`);
   if(looksHtml) throw new Error(`${name} 응답이 CSV가 아니라 HTML입니다. Google Sheet 공유 권한, 웹 게시 여부, gid, URL 형식을 확인하세요.`);
@@ -176,15 +160,6 @@ function updateSourceUI(){
 }
 async function loadCsvFromFetch(){
   const src=getCurrentSources();
-  debugLog("🚀 데이터 로딩 시작", {
-    source: currentSource,
-    label: src.label,
-    exams: src.exams,
-    tasks: src.tasks,
-    media: src.media,
-    pageUrl: location.href,
-    origin: location.origin
-  });
 
   const examsText=await fetchText(src.exams,'exams.csv');
   const tasksText=await fetchText(src.tasks,'tasks.csv');
@@ -194,23 +169,7 @@ async function loadCsvFromFetch(){
   const taskRows=parseCSV(tasksText);
   const mediaRows=parseCSV(mediaText);
 
-  debugLog("🧾 CSV 파싱 결과", {
-    examsRows: examRows.length,
-    tasksRows: taskRows.length,
-    mediaRows: mediaRows.length,
-    examsColumns: examRows[0] ? Object.keys(examRows[0]) : [],
-    tasksColumns: taskRows[0] ? Object.keys(taskRows[0]) : [],
-    mediaColumns: mediaRows[0] ? Object.keys(mediaRows[0]) : []
-  });
-
   REPAIR_DATA=buildData(examRows,taskRows,mediaRows);
-
-  debugLog("✅ 데이터 빌드 완료", {
-    exams: REPAIR_DATA.exams.length,
-    engineTasks: REPAIR_DATA.masters.engine.length,
-    chassisTasks: REPAIR_DATA.masters.chassis.length,
-    electricTasks: REPAIR_DATA.masters.electric.length
-  });
 
   if(!REPAIR_DATA.exams.length) throw new Error("exams.csv에서 안별 데이터를 만들지 못했습니다. 컬럼명 examId,title,summary,engineIds,chassisIds,electricIds를 확인하세요.");
   const totalTasks=REPAIR_DATA.masters.engine.length+REPAIR_DATA.masters.chassis.length+REPAIR_DATA.masters.electric.length;
