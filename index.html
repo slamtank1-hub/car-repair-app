@@ -25,8 +25,6 @@
     .answer-box{background:var(--answer-bg);border:1px solid #bae6fd;border-radius:14px;padding:14px;margin-top:10px;line-height:1.55;font-weight:800;color:#075985}.answer-box.hidden{filter:blur(5px);user-select:none}.media-img{width:100%;border-radius:14px;border:1px solid var(--line);margin-top:10px;display:block;background:white}.media-title{font-weight:850;margin:10px 0 6px}.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.quick-table{width:100%;border-collapse:separate;border-spacing:0 8px}.quick-table th{text-align:left;font-size:.78rem;color:var(--muted);padding:4px}.quick-table td{background:white;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 8px;font-size:.88rem}.quick-table td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px;font-weight:900;color:var(--primary-dark)}.quick-table td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}.flash-hint{font-size:.82rem;color:var(--muted);margin-top:7px}
     .source-switch{position:absolute;right:18px;top:14px;display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.14);padding:5px;border-radius:999px}.source-switch button{border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:white;border-radius:999px;padding:7px 9px;font-size:.72rem;font-weight:900;cursor:pointer}.source-switch button.active{background:white;color:var(--primary-dark);border-color:white}.source-status{font-size:.72rem;opacity:.92;margin-top:4px}.source-status b{color:white}.reload-mini{font-size:.72rem;text-decoration:underline;cursor:pointer;color:white;opacity:.95}@media (max-width:560px){.source-switch{position:static;margin-top:10px;justify-content:flex-end}.app-title{padding-right:0}}
 
-    .debug-panel{background:#020617;color:#e2e8f0;border-radius:16px;padding:14px;margin:12px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.78rem;line-height:1.55;white-space:pre-wrap;word-break:break-word}
-    .debug-panel b{color:#93c5fd}.debug-ok{color:#86efac}.debug-warn{color:#fde68a}.debug-error{color:#fca5a5}.debug-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.debug-actions button{border:1px solid #475569;background:#1e293b;color:#e2e8f0;border-radius:10px;padding:8px 10px;font-weight:800;cursor:pointer}
     .footer-notice{max-width:760px;margin:24px auto 0;padding:16px 18px;color:#64748b;font-size:.78rem;line-height:1.55;border-top:1px solid #e2e8f0}.footer-notice p{margin:6px 0}
     .load-box{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:10px;box-shadow:var(--shadow)}.file-grid{display:grid;gap:10px;margin-top:12px}.file-grid label{font-weight:800;font-size:.88rem;color:var(--secondary)}.file-grid input{width:100%;padding:10px;background:#f8fafc;border:1px solid var(--line);border-radius:10px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f1f5f9;padding:2px 6px;border-radius:6px}
     @media (min-width:680px){.exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.exam-grid .card{margin-bottom:0}}
@@ -59,47 +57,6 @@ const app=document.getElementById('app'),tabExam=document.getElementById('tab-ex
 
 const doneKey='repairMasterDoneIds',checkKey='repairMasterStepChecks';
 
-// ===== CSV loading debug helpers =====
-const DEBUG_LOG=[];
-function debugTime(){return new Date().toLocaleTimeString('ko-KR',{hour12:false})}
-function safeDebugString(data){
-  try{
-    if(typeof data==="string") return data;
-    return JSON.stringify(data,null,2);
-  }catch(e){return String(data)}
-}
-function debugLog(message, data){
-  const line=`[${debugTime()}] ${message}${data!==undefined ? "\n" + safeDebugString(data) : ""}`;
-  DEBUG_LOG.push(line);
-  if(DEBUG_LOG.length>120) DEBUG_LOG.shift();
-  console.log("[CSV DEBUG]", message, data ?? "");
-  renderDebugPanel();
-}
-function getDebugText(){return DEBUG_LOG.join("\n\n")}
-function formatDebugText(text){
-  return escapeHtml(text)
-    .replace(/✅/g,'<span class="debug-ok">✅</span>')
-    .replace(/⚠️/g,'<span class="debug-warn">⚠️</span>')
-    .replace(/❌/g,'<span class="debug-error">❌</span>');
-}
-function renderDebugPanel(){
-  const el=document.getElementById("debugPanel");
-  if(el) el.innerHTML=formatDebugText(getDebugText() || "아직 디버그 로그가 없습니다.");
-}
-async function copyDebugLog(){
-  try{await navigator.clipboard.writeText(getDebugText());alert("디버그 로그를 복사했습니다.")}
-  catch(e){alert("복사에 실패했습니다. 화면의 로그를 직접 복사하세요.")}
-}
-function clearDebugLog(){DEBUG_LOG.length=0;renderDebugPanel()}
-function debugPanelHtml(){
-  return `<div class="debug-panel"><b>CSV 로딩 디버그 로그</b>
-<div id="debugPanel">${formatDebugText(getDebugText() || "아직 디버그 로그가 없습니다.")}</div>
-<div class="debug-actions">
-  <button type="button" onclick="reloadCurrentSource()">다시 읽기</button>
-  <button type="button" onclick="copyDebugLog()">로그 복사</button>
-  <button type="button" onclick="clearDebugLog()">로그 지우기</button>
-</div></div>`;
-}
 
 
 function parseCSV(text){
@@ -266,7 +223,7 @@ async function changeDataSource(source){
 }
 async function reloadCurrentSource(){
   updateSourceUI();
-  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 다시 불러오는 중입니다...</div>${debugPanelHtml()}`;
+  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 다시 불러오는 중입니다...</div>`;
   try{
     await loadCsvFromFetch();
     state.view='examList';
@@ -282,7 +239,7 @@ function showLoadError(err){
   const localHelp=currentSource==='local'
     ? '브라우저에서 HTML을 직접 더블클릭하면 로컬 CSV 읽기가 막힐 수 있습니다. 같은 폴더에서 <span class="code">python -m http.server</span> 실행 후 <span class="code">http://localhost:8000</span>으로 접속하거나, 아래에서 CSV 3개를 직접 선택하세요.'
     : 'Google Drive 파일은 웹에 공개 또는 링크 접근 허용 상태여야 합니다. Drive 파일이 비공개이거나 CORS/권한 문제로 막히면 로컬 CSV 또는 파일 선택 방식을 사용하세요.';
-  app.innerHTML=`<div class="load-box"><h2 style="margin-top:0">CSV 파일을 불러오지 못했습니다.</h2><p class="summary">선택한 데이터 소스: <b>${escapeHtml(src.label)}</b></p><p class="summary">${localHelp}</p><p class="summary">오류: ${escapeHtml(err.message||err)}</p><div class="chip-row"><button class="chip ${currentSource==='local'?'active':''}" onclick="changeDataSource('local')">로컬 다시 읽기</button><button class="chip ${currentSource==='drive'?'active':''}" onclick="changeDataSource('drive')">Google Drive 다시 읽기</button></div><div class="file-grid"><label>exams.csv<input id="fileExams" type="file" accept=".csv,text/csv"></label><label>tasks.csv<input id="fileTasks" type="file" accept=".csv,text/csv"></label><label>media.csv<input id="fileMedia" type="file" accept=".csv,text/csv"></label><button class="btn btn-primary" type="button" onclick="loadCsvFromFiles()">CSV 파일로 열기</button></div>${debugPanelHtml()}</div>`;
+  app.innerHTML=`<div class="load-box"><h2 style="margin-top:0">CSV 파일을 불러오지 못했습니다.</h2><p class="summary">선택한 데이터 소스: <b>${escapeHtml(src.label)}</b></p><p class="summary">${localHelp}</p><p class="summary">오류: ${escapeHtml(err.message||err)}</p><div class="chip-row"><button class="chip ${currentSource==='local'?'active':''}" onclick="changeDataSource('local')">로컬 다시 읽기</button><button class="chip ${currentSource==='drive'?'active':''}" onclick="changeDataSource('drive')">Google Drive 다시 읽기</button></div><div class="file-grid"><label>exams.csv<input id="fileExams" type="file" accept=".csv,text/csv"></label><label>tasks.csv<input id="fileTasks" type="file" accept=".csv,text/csv"></label><label>media.csv<input id="fileMedia" type="file" accept=".csv,text/csv"></label><button class="btn btn-primary" type="button" onclick="loadCsvFromFiles()">CSV 파일로 열기</button></div></div>`;
   updateSourceUI();
 }
 function readFileInput(id){return new Promise((resolve,reject)=>{const file=document.getElementById(id)?.files?.[0];if(!file){reject(new Error(`${id} 파일을 선택하세요.`));return}const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error);reader.readAsText(file,'utf-8')})}
@@ -299,7 +256,7 @@ async function init(){
   currentSource=localStorage.getItem('repairMasterDataSource')||'drive';
   if(!DATA_SOURCES[currentSource]) currentSource='drive';
   updateSourceUI();
-  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 불러오는 중입니다...</div>${debugPanelHtml()}`;
+  app.innerHTML=`<div class="load-box">${escapeHtml(getCurrentSources().label)} 데이터를 불러오는 중입니다...</div>`;
   try{
     await loadCsvFromFetch();
     state.view='examList';
@@ -336,7 +293,16 @@ function renderExamListItems(){const list=document.getElementById('examList');if
 function goExamDetail(id){state.view='examDetail';state.selectedExamId=id;state.answerVisible=false;render()}
 function goTaskDetail(type,id,fromView){state.view='taskDetail';state.currentTaskType=type;state.currentTaskId=id;state.backView=fromView||'examDetail';state.answerVisible=false;render()}
 function renderExamDetail(){setActiveTab();const ex=REPAIR_DATA.exams.find(e=>e.id===state.selectedExamId);if(!ex)return setTab('examList');app.innerHTML=`<button class="btn btn-back" type="button" onclick="setTab('examList')">← 안별 리스트로</button><h2 style="margin:4px 0 2px;">${escapeHtml(ex.title)} 상세 구성</h2><div class="summary">${escapeHtml(ex.summary)}</div>`;Object.keys(CATEGORY).forEach(type=>{const ids=ex.tasks[type]||[];app.insertAdjacentHTML('beforeend',`<div class="section-head"><span>${CATEGORY[type].emoji} ${CATEGORY[type].label}</span><span class="count">${ids.length}개</span></div>`);ids.forEach(id=>{const task=findTask(type,id);app.insertAdjacentHTML('beforeend',task?taskCardHtml(task,'examDetail'):`<div class="card">등록 대기: ${escapeHtml(id)}</div>`)})})}
-function renderSubjectList(){setActiveTab();app.innerHTML=searchToolbar('과제명, ID, 답안 키워드 검색')+`<div class="chip-row"><button class="chip ${state.subjectFilter==='all'?'active':''}" onclick="setSubjectFilter('all')">전체</button><button class="chip ${state.subjectFilter==='engine'?'active':''}" onclick="setSubjectFilter('engine')">엔진</button><button class="chip ${state.subjectFilter==='chassis'?'active':''}" onclick="setSubjectFilter('chassis')">섀시</button><button class="chip ${state.subjectFilter==='electric'?'active':''}" onclick="setSubjectFilter('electric')">전기</button></div><div class="chip-row"><button class="chip ${state.doneFilter==='all'?'active':''}" onclick="setDoneFilter('all')">완료 전체</button><button class="chip ${state.doneFilter==='done'?'done-active':''}" onclick="setDoneFilter('done')">완료</button><button class="chip ${state.doneFilter==='todo'?'todo-active':''}" onclick="setDoneFilter('todo')">미완료</button></div><div id="subjectList"></div>`;bindSearch(renderSubjectListItems);renderSubjectListItems()}
+function renderSubjectList(){setActiveTab();app.innerHTML=searchToolbar('과제명, ID, 답안 키워드 검색')+`<div class="chip-row">
+<button class="chip ${state.subjectFilter==='all'?'active':''}" onclick="setSubjectFilter('all')">전체</button>
+<button class="chip ${state.subjectFilter==='engine'?'active':''}" onclick="setSubjectFilter('engine')">엔진</button>
+<button class="chip ${state.subjectFilter==='chassis'?'active':''}" onclick="setSubjectFilter('chassis')">섀시</button>
+<button class="chip ${state.subjectFilter==='electric'?'active':''}" onclick="setSubjectFilter('electric')">전기</button>
+<span style="align-self:center;color:#94a3b8;font-weight:900">|</span>
+<button class="chip ${state.doneFilter==='all'?'active':''}" onclick="setDoneFilter('all')">전체</button>
+<button class="chip ${state.doneFilter==='done'?'done-active':''}" onclick="setDoneFilter('done')">완료</button>
+<button class="chip ${state.doneFilter==='todo'?'todo-active':''}" onclick="setDoneFilter('todo')">미완료</button>
+</div><div id="subjectList"></div>`;bindSearch(renderSubjectListItems);renderSubjectListItems()}
 function setSubjectFilter(value){state.subjectFilter=value;renderSubjectList()}
 function setDoneFilter(value){state.doneFilter=(state.doneFilter===value&&value!=='all')?'all':value;renderSubjectList()}
 function renderSubjectListItems(){const target=document.getElementById('subjectList');if(!target)return;const q=state.search.trim().toLowerCase();let tasks=getAllTasks().filter(t=>{const cardAnswer=t.answer||'';const hay=`${t.id} ${t.title} ${cardAnswer} ${t.answerGuide||''} ${t.highlight||''} ${t.tasks.join(' ')}`.toLowerCase();const okSearch=!q||hay.includes(q);const okType=state.subjectFilter==='all'||t.type===state.subjectFilter;const okDone=state.doneFilter==='all'||(state.doneFilter==='done'?isDone(t.id):!isDone(t.id));return okSearch&&okType&&okDone});target.innerHTML='';if(!tasks.length){target.innerHTML='<div class="empty">표시할 과제가 없습니다.</div>';return}Object.keys(CATEGORY).forEach(type=>{const group=tasks.filter(t=>t.type===type);if(!group.length)return;target.insertAdjacentHTML('beforeend',`<div class="section-head"><span>${CATEGORY[type].emoji} ${CATEGORY[type].label}</span><span class="count">${group.length}개</span></div>`);group.forEach(task=>target.insertAdjacentHTML('beforeend',taskCardHtml(task,'subjectList')))})}
